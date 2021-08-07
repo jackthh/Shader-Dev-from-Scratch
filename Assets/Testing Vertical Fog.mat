@@ -68,7 +68,7 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _FogEndPos: -15
+    - _FogEndPos: -10
     - _FogStartPos: -7
     - _GlossMapScale: 1
     - _Glossiness: 0.5

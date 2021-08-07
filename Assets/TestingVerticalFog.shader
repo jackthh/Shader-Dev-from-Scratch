@@ -29,21 +29,27 @@
 
 		
 			void surf (Input IN, inout SurfaceOutput o){
-				float4 color = tex2D (_BaseTexture, IN.uv_BaseTexture) * _BaseColor;
-				
-				[branch] if( IN.worldPos.y > _FogStartPos || _FogStartPos == _FogEndPos)
-				{
-					o.Albedo = color.rgb;
-				}
-				else
-				{
-					float lerpPos = (IN.worldPos.y - _FogStartPos) / (_FogEndPos - _FogStartPos);
+        //  To combine albedo and texture
+        float4 color = tex2D (_BaseTexture, IN.uv_BaseTexture) * _BaseColor;
+          o.Albedo = color.rgb;
+        
+        //  To add an overlay fog over the surface
+        [branch] if( IN.worldPos.y < _FogStartPos & _FogStartPos != _FogEndPos)
+        {
+          float lerpPos = (IN.worldPos.y - _FogStartPos) / (_FogEndPos - _FogStartPos);
+        	lerpPos = clamp(lerpPos, 0, 1);
+        	
+          float4 fogColor = _FogColor;
+      
+          
+          o.Albedo =  lerp(color,fogColor,lerpPos);
 
-					float4 blendedColor = lerp(color, _FogColor, lerpPos);
-					
-					o.Albedo = blendedColor;	
-				}
-			}
+        	[branch] if(lerpPos > 1)
+        	{
+        		o.Albedo = float3(lerpPos,lerpPos,lerpPos);
+        	}
+        }
+      }
 		
 		ENDCG
     }
